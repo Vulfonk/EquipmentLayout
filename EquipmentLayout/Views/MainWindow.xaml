@@ -1,0 +1,78 @@
+﻿<Window x:Class="EquipmentLayout.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EquipmentLayout"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <DockPanel>
+            
+            <DockPanel Margin="10" DockPanel.Dock="Left">
+                <Label DockPanel.Dock="Top" Width="200">
+                    Девайсы
+                </Label>
+
+                <DataGrid Height="100" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" 
+                          ItemsSource="{Binding Path=Properties, Mode=TwoWay}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Свойство" Binding="{Binding Path=Name}">
+
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Значение" Binding="{Binding Path=Value}">
+
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <ListBox 
+                    DockPanel.Dock="Left" 
+                    ItemsSource="{Binding Path=DeviceTemplateViewModels}" 
+                    SelectedItem="{Binding Path=SelectedDeviceTemplate, Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Path=Name}"></Label>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <ListBox 
+                    DockPanel.Dock="Right" 
+                    ItemsSource="{Binding Path=DeviceTemplateViewModels}" 
+                    SelectedItem="{Binding Path=SelectedDeviceTemplate, Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Path=Name}"></Label>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+            </DockPanel>
+
+            <Button Height="20" Click="Button_Click">Расчет</Button>
+
+            <ItemsControl  ItemsSource="{Binding RectItems}" Height="600" Width="900" Margin="10" Background="AliceBlue">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas x:Name="canvas"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Path=X}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding Path=Y}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle Width="{Binding Width}" Height="{Binding Height}" Stroke="Black"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+
+            
+        </DockPanel>
+    </Grid>
+</Window>
