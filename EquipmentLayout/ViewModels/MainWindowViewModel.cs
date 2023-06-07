@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,15 +22,19 @@ namespace EquipmentLayout.ViewModels
 
         public DelegateCommand CalcCommand { get; set; }
 
-        public List<Device> InputItems 
-        { 
+        public DelegateCommand DeleteTemplateCommand { get; set; }
+
+        public DelegateCommand AddTemplateCommand { get; set; }
+
+        public List<Device> InputItems
+        {
             get
             {
                 var devices = new List<Device>();
                 var factory = new DeviceFactory();
                 foreach (var temp in DeviceTemplateViewModels)
                 {
-                    for(int i = 0; i < temp.Count; i++)
+                    for (int i = 0; i < temp.Count; i++)
                     {
                         var device = factory.GetDevice(new Point(), temp.Model);
                         devices.Add(device);
@@ -45,7 +50,7 @@ namespace EquipmentLayout.ViewModels
             set;
         }
 
-        public DeviceTemplateViewModel SelectedDeviceTemplate 
+        public DeviceTemplateViewModel SelectedDeviceTemplate
         {
             get => _selectedDeviceTemplate;
             set
@@ -59,25 +64,42 @@ namespace EquipmentLayout.ViewModels
 
         private void UpdateProperties()
         {
+            Action<DeviceTemplateViewModel, object> setter = (x, v) => (x as DeviceTemplateViewModel).Name = (string)v;
+            Func<DeviceTemplateViewModel, object> getter = (x) => (x as DeviceTemplateViewModel).Name;
+
             var model = _selectedDeviceTemplate;
-            var properties = new List<Property>
+
+            if (model == null)
             {
-                new Property( "Имя", model.Name ),
-                new Property( "Ширина", model.Width),
-                new Property( "Высота", model.Height ),
+                OnPropertyChanged(nameof(Properties));
+                return;
+            }
+
+            var properties = new List<Property<DeviceTemplateViewModel>>
+            {
+                new Property<DeviceTemplateViewModel>( "Имя", model.Name, model,
+                (x, v) => x.Name = (string)v,
+                (x) => x.Name),
+
+                new Property<DeviceTemplateViewModel>( "Ширина", model.Width, model,
+                (x, v) => x.Width = int.Parse(v.ToString()),
+                (x) => x.Width),
+
+                new Property<DeviceTemplateViewModel>( "Высота", model.Height, model,
+                (x, v) => x.Height = int.Parse(v.ToString()),
+                (x) => x.Height)
             };
+
             OnPropertyChanged(nameof(Properties));
-            this.Properties = new ObservableCollection<Property>(properties);
+            this.Properties = new ObservableCollection<Property<DeviceTemplateViewModel>>(properties);
         }
 
-        public ObservableCollection<Property> Properties { get; set; }
+        public ObservableCollection<Property<DeviceTemplateViewModel>> Properties { get; set; }
 
         private void CalcCommand_Executed()
         {
             var csvWriter = new CsvDeviceSerializer();
             csvWriter.Write(InputItems, "input.csv");
-           
-            MessageBox.Show("Расчет начат.", "", MessageBoxButton.OK, MessageBoxImage.Information);
 
             var process = new Process();
             var path = "stock_cutter.exe";
@@ -97,7 +119,6 @@ namespace EquipmentLayout.ViewModels
 
             RectItems = new ObservableCollection<Device>(devices);
             OnPropertyChanged(nameof(RectItems));
-            MessageBox.Show("Расчет завершен.", "", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public MainWindowViewModel()
@@ -105,7 +126,8 @@ namespace EquipmentLayout.ViewModels
             DeviceTemplateViewModels = new ObservableCollection<DeviceTemplateViewModel>();
             RectItems = new ObservableCollection<Device>();
             CalcCommand = new DelegateCommand(CalcCommand_Executed);
-
+            AddTemplateCommand = new DelegateCommand(AddTemplateCommand_Executed);
+            DeleteTemplateCommand = new DelegateCommand(DeleteTemplateCommand_Executed);
 
             var template = new DeviceTemplate(100, 100, "MyDevice");
             var vm_template = new DeviceTemplateViewModel(template);
@@ -129,14 +151,36 @@ namespace EquipmentLayout.ViewModels
 
         }
 
+        private void DeleteTemplateCommand_Executed()
+        {
+            this.DeviceTemplateViewModels.Remove(this.SelectedDeviceTemplate);
+        }
+
+        private void AddTemplateCommand_Executed()
+        {
+            this.DeviceTemplateViewModels.Add(this.SelectedDeviceTemplate.Clone());
+
+        }
     }
 
-    public class Property
+    public class Property<T>
     {
+        private T _model;
         public string Name { get; set; }
-        public object Value { get; set; }
-        public Property(string name, object value)
+        public object Value
         {
+            get => _getter(_model);
+            set => _setter(_model, value);
+        }
+
+        private Action<T, object> _setter;
+        private Func<T, object> _getter;
+
+        public Property(string name, object value, T model, Action<T, object> setter, Func<T, object> getter)
+        {
+            this._model = model;
+            this._setter = setter;
+            this._getter = getter;
             Name = name;
             Value = value;
         }

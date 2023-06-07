@@ -52,6 +52,12 @@ namespace EquipmentLayout.ViewModels
             }
         }
 
+        public DeviceTemplateViewModel Clone()
+        {
+            var cloneModel = this._model.Clone();
+            return new DeviceTemplateViewModel(cloneModel);
+        }
+
 
         public DeviceTemplateViewModel(DeviceTemplate model)
         {

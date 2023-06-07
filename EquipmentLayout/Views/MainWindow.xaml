@@ -22,18 +22,15 @@
 
                 <DataGrid Height="100" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" 
                           ItemsSource="{Binding Path=Properties, Mode=TwoWay}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Свойство" Binding="{Binding Path=Name}">
 
-                        </DataGridTextColumn>
-                        <DataGridTextColumn Header="Значение" Binding="{Binding Path=Value}">
-
-                        </DataGridTextColumn>
-                    </DataGrid.Columns>
                 </DataGrid>
 
+                <DockPanel  DockPanel.Dock="Bottom">
+                    <Button Command="{Binding Path=AddTemplateCommand}" Height="25" DockPanel.Dock="Left" HorizontalAlignment="Left">Добавить</Button>
+                    <Button Command="{Binding Path=DeleteTemplateCommand}" DockPanel.Dock="Left">Удалить</Button>
+                </DockPanel>
                 <ListBox 
-                    DockPanel.Dock="Left" 
+                    DockPanel.Dock="Top" 
                     ItemsSource="{Binding Path=DeviceTemplateViewModels}" 
                     SelectedItem="{Binding Path=SelectedDeviceTemplate, Mode=TwoWay}"
                     HorizontalAlignment="Stretch">
@@ -53,7 +50,6 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-
 
             </DockPanel>
 

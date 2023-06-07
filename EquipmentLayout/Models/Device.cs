@@ -45,8 +45,8 @@ namespace EquipmentLayout.Models
         public DeviceTemplate Clone()
         {
             var clone = new DeviceTemplate(Width, Height, Name);
-            clone.WorkArea = this.WorkArea.Clone();
-            clone.ServiceArea = this.WorkArea.Clone();
+            //clone.WorkArea = this.WorkArea.Clone();
+            //clone.ServiceArea = this.WorkArea.Clone();
             return clone;
         }
 
