@@ -1,12 +1,15 @@
 ﻿using EquipmentLayout.Infrastructure;
 using EquipmentLayout.Models;
+using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace EquipmentLayout.ViewModels
 {
@@ -16,10 +19,30 @@ namespace EquipmentLayout.ViewModels
 
         private DeviceTemplateViewModel _selectedDeviceTemplate;
 
-        public ObservableCollection<Device> RectItems 
+        public DelegateCommand CalcCommand { get; set; }
+
+        public List<Device> InputItems 
         { 
-            get; 
-            set; 
+            get
+            {
+                var devices = new List<Device>();
+                var factory = new DeviceFactory();
+                foreach (var temp in DeviceTemplateViewModels)
+                {
+                    for(int i = 0; i < temp.Count; i++)
+                    {
+                        var device = factory.GetDevice(new Point(), temp.Model);
+                        devices.Add(device);
+                    }
+                }
+                return devices;
+            }
+        }
+
+        public ObservableCollection<Device> RectItems
+        {
+            get;
+            set;
         }
 
         public DeviceTemplateViewModel SelectedDeviceTemplate 
@@ -49,10 +72,40 @@ namespace EquipmentLayout.ViewModels
 
         public ObservableCollection<Property> Properties { get; set; }
 
+        private void CalcCommand_Executed()
+        {
+            var csvWriter = new CsvDeviceSerializer();
+            csvWriter.Write(InputItems, "input.csv");
+           
+            MessageBox.Show("Расчет начат.", "", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            var process = new Process();
+            var path = "stock_cutter.exe";
+
+            process.Exited += ProcessExited;
+
+            process.StartInfo.FileName = path;
+            process.EnableRaisingEvents = true;
+            process.Start();
+
+        }
+
+        private void ProcessExited(object sender, EventArgs e)
+        {
+            var csvReader = new CsvDeviceDeserializer();
+            var devices = csvReader.Read("output.csv");
+
+            RectItems = new ObservableCollection<Device>(devices);
+            OnPropertyChanged(nameof(RectItems));
+            MessageBox.Show("Расчет завершен.", "", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
         public MainWindowViewModel()
         {
             DeviceTemplateViewModels = new ObservableCollection<DeviceTemplateViewModel>();
             RectItems = new ObservableCollection<Device>();
+            CalcCommand = new DelegateCommand(CalcCommand_Executed);
+
 
             var template = new DeviceTemplate(100, 100, "MyDevice");
             var vm_template = new DeviceTemplateViewModel(template);
@@ -69,8 +122,8 @@ namespace EquipmentLayout.ViewModels
             var position2 = new Point(20, 30);
             var device2 = factory.GetDevice(position2, template);
 
-            RectItems.Add(device1);
-            RectItems.Add(device2);
+            //RectItems.Add(device1);
+            //RectItems.Add(device2);
 
             DeviceTemplateViewModels.Add(vm_template2);
 

@@ -13,7 +13,10 @@ namespace EquipmentLayout.ViewModels
     {
         private DeviceTemplate _model;
 
-        public uint Width 
+        public DeviceTemplate Model => _model;
+
+
+        public int Width 
         { 
             get => _model.Width;
             set
@@ -22,7 +25,7 @@ namespace EquipmentLayout.ViewModels
             }
         }
 
-        public uint Height
+        public int Height
         {
             get => _model.Height;
             set
@@ -37,6 +40,15 @@ namespace EquipmentLayout.ViewModels
             set
             {
                 if (_model.Name == value) return; else _model.Name = value; OnPropertyChanged();
+            }
+        }
+
+        public int Count
+        {
+            get => _model.Count;
+            set
+            {
+                if (_model.Count == value) return; else _model.Count = value; OnPropertyChanged();
             }
         }
 

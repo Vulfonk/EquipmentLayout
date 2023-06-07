@@ -10,9 +10,15 @@
         <DockPanel>
             
             <DockPanel Margin="10" DockPanel.Dock="Left">
-                <Label DockPanel.Dock="Top" Width="200">
-                    Девайсы
-                </Label>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    
+                    <Label Width="150">
+                        Девайсы
+                    </Label>
+                    <Label Width="100">
+                        Количество
+                    </Label>
+                </StackPanel>
 
                 <DataGrid Height="100" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" 
                           ItemsSource="{Binding Path=Properties, Mode=TwoWay}">
@@ -29,28 +35,30 @@
                 <ListBox 
                     DockPanel.Dock="Left" 
                     ItemsSource="{Binding Path=DeviceTemplateViewModels}" 
-                    SelectedItem="{Binding Path=SelectedDeviceTemplate, Mode=TwoWay}">
+                    SelectedItem="{Binding Path=SelectedDeviceTemplate, Mode=TwoWay}"
+                    HorizontalAlignment="Stretch">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Label Content="{Binding Path=Name}"></Label>
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width ="160" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Content="{Binding Path=Name}" Grid.Column="0"></Label>
+                                <TextBox Text="{Binding Path=Count}" HorizontalAlignment="Right" MinWidth="50" Grid.Column="1">
+                                    
+                                </TextBox>
+                            </Grid>
+                            
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <ListBox 
-                    DockPanel.Dock="Right" 
-                    ItemsSource="{Binding Path=DeviceTemplateViewModels}" 
-                    SelectedItem="{Binding Path=SelectedDeviceTemplate, Mode=TwoWay}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Label Content="{Binding Path=Name}"></Label>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
 
             </DockPanel>
 
-            <Button Height="20" Click="Button_Click">Расчет</Button>
+            <Button DockPanel.Dock="Bottom" Margin="10" HorizontalAlignment="Right" Height="20" Width="60" Command="{Binding CalcCommand}" Content="Расчет">
+            </Button>
 
             <ItemsControl  ItemsSource="{Binding RectItems}" Height="600" Width="900" Margin="10" Background="AliceBlue">
                 <ItemsControl.ItemsPanel>

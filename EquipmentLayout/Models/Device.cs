@@ -9,17 +9,19 @@ namespace EquipmentLayout.Models
 {
     public class DeviceTemplate : IArea
     {
-        public uint Width { get; set; }
-        public uint Height { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
         public string Name { get; set; }
+
+        public int Count { get;set; }
 
         Area WorkArea { get; set; }
         Area ServiceArea { get; set; }
 
         class Area
         {
-            public uint Width { get; set; }
-            public uint Height { get; set; }
+            public int Width { get; set; }
+            public int Height { get; set; }
 
             public Point Position { get; set; }
 
@@ -33,7 +35,7 @@ namespace EquipmentLayout.Models
             }
         }
 
-        public DeviceTemplate(uint width, uint height, string name)
+        public DeviceTemplate(int width, int height, string name)
         {
             this.Width = width;
             this.Height = height;
@@ -52,16 +54,16 @@ namespace EquipmentLayout.Models
 
     public interface IArea
     {
-        uint Width { get; }
-        uint Height { get; }
+        int Width { get; }
+        int Height { get; }
     }
 
     public class Device : IArea
     {
         DeviceTemplate deviceTemplate;
         Point Position { get; set; }
-        public uint Width { get => deviceTemplate.Width;}
-        public uint Height { get => deviceTemplate.Height;}
+        public int Width { get => deviceTemplate.Width;}
+        public int Height { get => deviceTemplate.Height;}
 
         public int X => (int)Position.X;
 

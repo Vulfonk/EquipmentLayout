@@ -80,11 +80,5 @@ namespace EquipmentLayout.Views
             //DrawGrid();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var path = "C:\\Users\\admin\\Desktop\\csp-master\\deployment\\output\\stock_cutter.exe";
-            Process.Start(path);
-            MessageBox.Show("КОНЕЦ!");
-        }
     }
 }
