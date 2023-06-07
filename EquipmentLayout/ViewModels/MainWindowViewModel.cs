@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Shapes;
 
 namespace EquipmentLayout.ViewModels
 {
@@ -25,6 +26,18 @@ namespace EquipmentLayout.ViewModels
         public DelegateCommand DeleteTemplateCommand { get; set; }
 
         public DelegateCommand AddTemplateCommand { get; set; }
+
+        private Rectangle _zone;
+
+        public Rectangle Zone 
+        { 
+            get => _zone;
+            set
+            {
+                this._zone = value;
+                OnPropertyChanged(nameof(Zone));
+            }
+        }
 
         public List<Device> InputItems
         {
@@ -99,7 +112,7 @@ namespace EquipmentLayout.ViewModels
         private void CalcCommand_Executed()
         {
             var csvWriter = new CsvDeviceSerializer();
-            csvWriter.Write(InputItems, "input.csv");
+            csvWriter.Write(Zone, InputItems, "input.csv");
 
             var process = new Process();
             var path = "stock_cutter.exe";
@@ -128,6 +141,14 @@ namespace EquipmentLayout.ViewModels
             CalcCommand = new DelegateCommand(CalcCommand_Executed);
             AddTemplateCommand = new DelegateCommand(AddTemplateCommand_Executed);
             DeleteTemplateCommand = new DelegateCommand(DeleteTemplateCommand_Executed);
+            Zone = new Rectangle()
+            {
+                Width = 460,
+                Height = 330,
+            };
+           
+
+            var factory = new DeviceFactory();
 
             var template = new DeviceTemplate(100, 100, "MyDevice");
             var vm_template = new DeviceTemplateViewModel(template);
@@ -137,7 +158,6 @@ namespace EquipmentLayout.ViewModels
             var template2 = new DeviceTemplate(200, 100, "MyDevice2");
             var vm_template2 = new DeviceTemplateViewModel(template2);
 
-            var factory = new DeviceFactory();
             var position = new Point(100, 50);
             var device1 = factory.GetDevice(position, template2);
 

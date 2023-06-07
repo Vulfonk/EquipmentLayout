@@ -8,10 +8,10 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <DockPanel>
-            
+
             <DockPanel Margin="10" DockPanel.Dock="Left">
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                    
+
                     <Label Width="150">
                         Девайсы
                     </Label>
@@ -43,40 +43,59 @@
                                 </Grid.ColumnDefinitions>
                                 <Label Content="{Binding Path=Name}" Grid.Column="0"></Label>
                                 <TextBox Text="{Binding Path=Count}" HorizontalAlignment="Right" MinWidth="50" Grid.Column="1">
-                                    
+
                                 </TextBox>
                             </Grid>
-                            
+
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
 
             </DockPanel>
 
-            <Button DockPanel.Dock="Bottom" Margin="10" HorizontalAlignment="Right" Height="20" Width="60" Command="{Binding CalcCommand}" Content="Расчет">
-            </Button>
-
-            <ItemsControl  ItemsSource="{Binding RectItems}" Height="600" Width="900" Margin="10" Background="AliceBlue">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Canvas x:Name="canvas"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="ContentPresenter">
-                        <Setter Property="Canvas.Left" Value="{Binding Path=X}"/>
-                        <Setter Property="Canvas.Top" Value="{Binding Path=Y}"/>
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Rectangle Width="{Binding Width}" Height="{Binding Height}" Stroke="Black"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <StackPanel Margin="10"  DockPanel.Dock="Bottom" Orientation="Horizontal">
 
 
-            
+                <TextBlock VerticalAlignment="Center">Ширина</TextBlock>
+                <TextBox Text="{Binding Path=Zone.Width, Mode=TwoWay}" Margin="5" Width="100">
+                </TextBox>
+
+                <TextBlock VerticalAlignment="Center">Высота</TextBlock>
+
+                <TextBox Text="{Binding Path=Zone.Height, Mode=TwoWay}" Margin="5" Width="100">
+                </TextBox>
+
+                <Button Margin="5" Height="20" Width="60" Command="{Binding CalcCommand}" Content="Расчет">
+                </Button>
+            </StackPanel>
+
+
+            <Grid DockPanel.Dock="Right">
+
+                <ItemsControl HorizontalAlignment="Left" VerticalAlignment="Top"  ItemsSource="{Binding RectItems}" Width="{Binding Path=Zone.Width, UpdateSourceTrigger=PropertyChanged}" Background="AliceBlue" Height="{Binding Path=Zone.Height, UpdateSourceTrigger=PropertyChanged}" Margin="10">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas x:Name="canvas">
+                            </Canvas>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding Path=X}"/>
+                            <Setter Property="Canvas.Top" Value="{Binding Path=Y}"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Rectangle Width="{Binding Width}" Height="{Binding Height}" Stroke="Black"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Rectangle Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding Path=Zone.Width, UpdateSourceTrigger=PropertyChanged}" Height="{Binding Path=Zone.Height, UpdateSourceTrigger=PropertyChanged}" Stroke="Black"/>
+            </Grid>
+
+
+
         </DockPanel>
     </Grid>
 </Window>

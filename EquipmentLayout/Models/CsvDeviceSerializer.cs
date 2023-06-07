@@ -16,9 +16,9 @@ namespace EquipmentLayout.Models
     public class CsvDeviceSerializer
     {
 
-        public void Write(IList<Device> records, string filename)
+        public void Write(Rectangle zoneDevice, IList<Device> records, string filename)
         {
-            var zone = new DeviceDtoSize(400, 400, 1);
+            var zone = new DeviceDtoSize((int)zoneDevice.Width, (int)zoneDevice.Height, 1);
             var newRecords = records.Select(x => new DeviceDtoSize(x.Width, x.Height, 1));
 
             var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
