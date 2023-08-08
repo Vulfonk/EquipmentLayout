@@ -103,8 +103,8 @@ namespace EquipmentLayout.ViewModels
                 (x) => x.Height)
             };
 
-            this.Properties = new ObservableCollection<Property<DeviceTemplateViewModel>>(properties);
             OnPropertyChanged(nameof(Properties));
+            this.Properties = new ObservableCollection<Property<DeviceTemplateViewModel>>(properties);
         }
 
         public ObservableCollection<Property<DeviceTemplateViewModel>> Properties { get; set; }
@@ -178,15 +178,7 @@ namespace EquipmentLayout.ViewModels
 
         private void AddTemplateCommand_Executed()
         {
-            if(this.SelectedDeviceTemplate != null)
-                this.DeviceTemplateViewModels.Add(this.SelectedDeviceTemplate.Clone());
-            else
-            {
-                var template2 = new DeviceTemplate(200, 100, "Name");
-                var vm_template2 = new DeviceTemplateViewModel(template2);
-                this.DeviceTemplateViewModels.Add(vm_template2);
-            }
-
+            this.DeviceTemplateViewModels.Add(this.SelectedDeviceTemplate.Clone());
 
         }
     }
