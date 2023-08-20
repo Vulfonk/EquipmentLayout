@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace EquipmentLayout.Models
 {
+    /// <summary>
+    /// Решатель.
+    /// </summary>
     internal class Solver
     {
     }
